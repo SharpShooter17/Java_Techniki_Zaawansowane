@@ -1,15 +1,18 @@
 package rozdzial01;
 
-import java.util.List;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 class generuj <T> implements Supplier<T>{
 
@@ -24,19 +27,62 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 		Main m = new Main();
+		m.f3();
 		m.f2();
 		m.f1();
+		m.f5();
+		m.f6();
+	}
+
+	void f6() {
+		List<Integer> ints = new ArrayList<>();
+		ints.add(1);
+		ints.add(10);
+		ints.add(7);
+
+		Optional<Integer> max = ints.stream().max(Integer::compareTo);
+		System.out.print("Maximum: " + max.orElse(-1));
+	}
+
+	void f5(){
+		List<String> song = new ArrayList<>();
+		song.add("A");
+		song.add("A");
+		song.add("C");
+		song.add("AbecaDlo");
+		song.add("");
+
+		//distinct - zwraca "set"
+		Stream<String> stream = song.stream().distinct();
+		stream = stream.sorted(Comparator.comparing(String::length).reversed());
+		Iterator<String> it = stream.iterator();
+		for (String i = it.next(); it.hasNext(); i = it.next()) {
+			System.out.println(i);
+		}
+	}
+
+	void f3(){
+		List<String> song = new ArrayList<>();
+		song.add("A");
+		song.add("B");
+		song.add("C");
+		song.add("AbecaDlo");
+		Stream<String> lowerSong = song.stream().map(String::toLowerCase);
+		Iterator<String> it = lowerSong.iterator();
+		for (String i = it.next(); it.hasNext(); i = it.next()) {
+			System.out.println(i);
+		}
 	}
 
 	void f2() {
 		//strumien z argumentow lub tablicy
 		Stream<String> song = Stream.of("A", "B", "C", "Abecadlo");
 		//generowanie strumienia
-		Stream<String> echos = Stream.generate(new generuj());
+		Stream<String> echos = Stream.generate(new generuj()).limit(1);
 		//lub
 		Stream<String> echos1 = Stream.generate(() -> "echo");
 		//inty
-		Stream<BigInteger> ints = Stream.iterate(BigInteger.ZERO, n -> n.add(BigInteger.TEN));
+		Stream<BigInteger> ints = Stream.iterate(BigInteger.ZERO, n -> n.add(BigInteger.TEN)).limit(10);
 		BigInteger i = BigInteger.ZERO;
 		for (Iterator<BigInteger> it = ints.iterator(); it.hasNext(); i = it.next()) {
 			System.out.println(i);
